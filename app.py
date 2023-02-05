@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, make_response
+from flask import Flask, render_template, request, make_response, session
 import datetime
 
 STATIC_FOLDER = 'templates/assets'
@@ -13,11 +13,20 @@ def index():
         else:
             return render_template("index.html", agreed = False)
     elif request.method == 'POST':
-        if request.form['agreement'] == 'on':
-            # setting the cookie
-            resp = make_response(render_template("index.html", agreed = True))
-            resp.set_cookie('agreement', 'yes', expires=datetime.datetime.now() + datetime.timedelta(days=365))
-            return resp
+        # checking if the user agreed to the terms in the cookie
+        if not request.cookies.get('agreement') == 'yes':
+            if request.form['agreement'] == 'on':
+                # setting the cookie
+                resp = make_response(render_template("index.html", agreed = True))
+                resp.set_cookie('agreement', 'yes', expires=datetime.datetime.now() + datetime.timedelta(days=365))
+                return resp
+        else:
+            session['email'] = request.form['email']
+            session['device'] = request.form['device']
+            session['residence'] = request.form['residence']
+            session['room'] = request.form['room']
+
+            return render_template("index.html", agreed = True)
 
 @app.route("/cookie",methods = ['POST', 'GET'])
 def cookie():
@@ -33,8 +42,9 @@ def test():
 @app.route("/test2", methods = ['POST', 'GET'])
 def test2():
     if request.method == 'GET':
-        return  request.cookies.get('agreement')
-
+        return render_template("index.html", agreed = False)
+    elif request.method == 'POST':
+        return str(request.form['email'] + request.form['device'] + request.form['residence'] + request.form['room'])
 
 
 
