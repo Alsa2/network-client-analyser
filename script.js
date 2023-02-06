@@ -8,6 +8,8 @@ setInterval(function() {
     collectData();
 }, 300000);
 
+var websites = ["google.com", "classroom.google.com", "mail.google.com", "isak.managebac.com", "drive.google.com", "docs.google.com"];
+
 function collectData() {
     var data = {
         "ping": getPing(),
@@ -25,5 +27,9 @@ function collectData() {
 }
 
 function getPing() {
-    return 0;
+    // get ping from websites
+    var pings = [];
+    for (var i = 0; i < websites.length; i++) {
+        pings.push(getPingFromWebsite(websites[i]));
+    }
 }
