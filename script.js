@@ -26,10 +26,4 @@ function collectData() {
     sendData(data);
 }
 
-function getPing() {
-    // get ping from websites
-    var pings = [];
-    for (var i = 0; i < websites.length; i++) {
-        pings.push(getPingFromWebsite(websites[i]));
-    }
-}
+ 
